@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 void print_whitespace(int space_count, int tab_count)
 {
@@ -54,12 +56,48 @@ int trailing_white(int c)
 
 }
 
+void usage()
+{
+	fputs("\n\
+trim - the whitespace cleaner. \n\
+\n\
+Available flags: \n\
+-a	Remove all the white space from your input. \n\
+-s	Remove white space only from the start of your lines. \n\
+-e	Remove white space only from the end of your lines. \n\
+-h	This menu.\n\n\
+", stdout);
+	exit(0);
+}
+
 int main(int argc, char **argv)
 {
 	FILE *input;
 	int c;
+	int o;
 	int last_char = '\n';
 	int had_trail;
+	int all_whitespace = 0;
+	int only_start = 0;
+	int only_end = 0;
+
+	while((o = getopt(argc, argv, "aseh")) != -1)
+	{
+		switch(o)
+		{
+			case 'a':
+				all_whitespace = 1;
+				break;
+			case 's':
+				only_start = 1;
+				break;
+			case 'e':
+				only_end = 1;
+				break;
+			default:
+				usage();
+		}
+	}
 
 	input = stdin;
 
@@ -67,14 +105,32 @@ int main(int argc, char **argv)
 	{
 		if(c == ' ' || c == '\t')
 		{
+			if(all_whitespace)
+			{
+				continue;
+			}
+
 			if(last_char != '\n')
 			{
-				had_trail = trailing_white(c);
-				if(had_trail)
+				if(!only_start)
 				{
-					last_char = '\n';
+					had_trail = trailing_white(c);
+					if(had_trail)
+					{
+						last_char = '\n';
+					}
+					continue;
 				}
-				continue;
+				else
+				{
+					fputc(c, stdout);
+					last_char = c;
+				}
+			}
+			else if(only_end)
+			{
+				fputc(c, stdout);
+				last_char = c;
 			}
 		}
 		else
