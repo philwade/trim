@@ -1,3 +1,9 @@
+/*
+ * trim - clean up whitespace
+ * by Phil Wade <phil@philwade.org>
+ * (c) 2012
+ * MIT licensed: http://www.opensource.org/licenses/mit-license.php
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -59,7 +65,7 @@ int trailing_white(int c)
 void usage()
 {
 	fputs("\n\
-trim - the whitespace cleaner. \n\
+trim - the whitespace cleaner. Removes trailing and beginning whitespace from stdin.\n\
 \n\
 Available flags: \n\
 -a	Remove all the white space from your input. \n\
