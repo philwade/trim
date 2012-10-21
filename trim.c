@@ -8,6 +8,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+// options
+static int all_whitespace;
+static int only_start;
+static int only_end;
+
 void print_whitespace(int space_count, int tab_count)
 {
 	int i;
@@ -25,7 +30,7 @@ void print_whitespace(int space_count, int tab_count)
 // see if it is just white space until newline
 // returns 1 if we have trailing whitespace
 // 0 if not
-int trailing_white(int c)
+int trailing_white(int c, FILE *stream)
 {
 	int space_counter = 0;
 	int tab_counter = 0;
@@ -57,7 +62,7 @@ int trailing_white(int c)
 			return 0;
 		}
 
-		c = fgetc(stdin);
+		c = fgetc(stream);
 	}
 
 }
@@ -76,36 +81,11 @@ Available flags: \n\
 	exit(0);
 }
 
-int main(int argc, char **argv)
+void trim_file(FILE *input)
 {
-	FILE *input;
 	int c;
-	int o;
 	int last_char = '\n';
 	int had_trail;
-	int all_whitespace = 0;
-	int only_start = 0;
-	int only_end = 0;
-
-	while((o = getopt(argc, argv, "aseh")) != -1)
-	{
-		switch(o)
-		{
-			case 'a':
-				all_whitespace = 1;
-				break;
-			case 's':
-				only_start = 1;
-				break;
-			case 'e':
-				only_end = 1;
-				break;
-			default:
-				usage();
-		}
-	}
-
-	input = stdin;
 
 	while(EOF != (c = fgetc(input)))
 	{
@@ -120,7 +100,7 @@ int main(int argc, char **argv)
 			{
 				if(!only_start)
 				{
-					had_trail = trailing_white(c);
+					had_trail = trailing_white(c, input);
 					if(had_trail)
 					{
 						last_char = '\n';
@@ -145,5 +125,45 @@ int main(int argc, char **argv)
 			last_char = c;
 		}
 	}
+}
+
+int main(int argc, char **argv)
+{
+	FILE *input;
+	int o;
+
+	while((o = getopt(argc, argv, "aseh")) != -1)
+	{
+		switch(o)
+		{
+			case 'a':
+				all_whitespace = 1;
+				break;
+			case 's':
+				only_start = 1;
+				break;
+			case 'e':
+				only_end = 1;
+				break;
+			default:
+				usage();
+		}
+	}
+
+	if (optind == argc)
+	{
+		input = stdin;
+		trim_file(stdin);
+	}
+	else
+	{
+		int i;
+		for(i = optind;i < argc;i++)
+		{
+			input = fopen(argv[optind], "r");
+			trim_file(input);
+		}
+	}
+
 	return 0;
 }
