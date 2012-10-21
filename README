@@ -1,8 +1,6 @@
 Trim is a unix command line utility for cleaning up white space.
 
-By default it will remove all white space at the beginning and end of lines received from standard input.
-
-Reading from files is coming soon.
+By default it will remove all white space at the beginning and end of lines received from standard input or files.
 
 It also has some options:
 -a	Remove all the white space from your input.
@@ -16,7 +14,6 @@ Fact: if you write your own unix text utility, you get invited to more parties.
 
 TODO:
 Write some tests
-Use files in addition to stdin
 
 by Phil Wade <phil@philwade.org>
 (c) 2012

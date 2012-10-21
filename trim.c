@@ -70,7 +70,9 @@ int trailing_white(int c, FILE *stream)
 void usage()
 {
 	fputs("\n\
-trim - the whitespace cleaner. Removes trailing and beginning whitespace from stdin.\n\
+trim - the whitespace cleaner. Removes trailing and beginning whitespace from stdin or files.\n\
+\n\
+usage: trim -aseh [file ..] \n\
 \n\
 Available flags: \n\
 -a	Remove all the white space from your input. \n\
